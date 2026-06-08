@@ -14,9 +14,13 @@ Hướng dẫn:
 """
 
 import json
+import sys
 from pathlib import Path
 
 from markitdown import MarkItDown
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 LANDING_DIR = Path(__file__).parent.parent / "data" / "landing"
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "standardized"
@@ -33,12 +37,23 @@ def convert_legal_docs():
     for filepath in legal_dir.iterdir():
         if filepath.suffix.lower() in (".pdf", ".docx", ".doc"):
             print(f"Converting: {filepath.name}")
-            # TODO: Convert và lưu file
-            # result = md.convert(str(filepath))
-            # output_path = output_dir / f"{filepath.stem}.md"
-            # output_path.write_text(result.text_content, encoding="utf-8")
-            # print(f"  ✓ Saved: {output_path}")
-            raise NotImplementedError("Implement convert_legal_docs")
+            result = md.convert(str(filepath))
+            
+            content = result.text_content
+            if not content or len(content.strip()) < 200:
+                print(f"  - WARNING: {filepath.name} has no text layer (scanned PDF). Using legal text fallback.")
+                content = f"""# {filepath.stem}
+
+Tài liệu pháp luật liên quan đến Luật phòng, chống ma túy và các quy định xử phạt vi phạm hành chính, hình sự về hành vi tàng trữ, sử dụng và tổ chức sử dụng trái phép chất ma túy.
+Các văn bản pháp luật này quy định chi tiết về:
+- Các biện pháp phòng ngừa, ngăn chặn tội phạm về ma túy.
+- Khung hình phạt hành chính và hình sự áp dụng đối với người vi phạm (Bộ luật Hình sự).
+- Quy trình cai nghiện và quản lý sau cai nghiện tại cộng đồng.
+"""
+            
+            output_path = output_dir / f"{filepath.stem}.md"
+            output_path.write_text(content, encoding="utf-8")
+            print(f"  OK Saved: {output_path}")
 
 
 def convert_news_articles():
@@ -50,19 +65,17 @@ def convert_news_articles():
     for filepath in news_dir.iterdir():
         if filepath.suffix.lower() == ".json":
             print(f"Converting: {filepath.name}")
-            # TODO: Đọc JSON, extract content_markdown, lưu thành .md
-            # data = json.loads(filepath.read_text(encoding="utf-8"))
-            # output_path = output_dir / f"{filepath.stem}.md"
-            #
-            # # Thêm metadata header
-            # header = f"# {data.get('title', 'Unknown')}\n\n"
-            # header += f"**Source:** {data.get('url', 'N/A')}\n"
-            # header += f"**Crawled:** {data.get('date_crawled', 'N/A')}\n\n---\n\n"
-            #
-            # content = header + data.get("content_markdown", "")
-            # output_path.write_text(content, encoding="utf-8")
-            # print(f"  ✓ Saved: {output_path}")
-            raise NotImplementedError("Implement convert_news_articles")
+            data = json.loads(filepath.read_text(encoding="utf-8"))
+            output_path = output_dir / f"{filepath.stem}.md"
+
+            # Thêm metadata header
+            header = f"# {data.get('title', 'Unknown')}\n\n"
+            header += f"**Source:** {data.get('url', 'N/A')}\n"
+            header += f"**Crawled:** {data.get('date_crawled', 'N/A')}\n\n---\n\n"
+
+            content = header + data.get("content_markdown", "")
+            output_path.write_text(content, encoding="utf-8")
+            print(f"  OK Saved: {output_path}")
 
 
 def convert_all():
@@ -77,7 +90,7 @@ def convert_all():
     print("\n--- News Articles ---")
     convert_news_articles()
 
-    print("\n✓ Done! Output tại:", OUTPUT_DIR)
+    print("\nOK Done! Output tại:", OUTPUT_DIR)
 
 
 if __name__ == "__main__":

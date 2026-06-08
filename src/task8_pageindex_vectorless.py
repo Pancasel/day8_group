@@ -31,22 +31,24 @@ def upload_documents():
     """
     Upload toàn bộ markdown documents lên PageIndex.
     """
-    # TODO: Implement upload
-    #
-    # Tham khảo: https://github.com/VectifyAI/PageIndex
-    #
-    # from pageindex import PageIndex
-    #
-    # pi = PageIndex(api_key=PAGEINDEX_API_KEY)
-    #
-    # for md_file in STANDARDIZED_DIR.rglob("*.md"):
-    #     content = md_file.read_text(encoding="utf-8")
-    #     pi.upload(
-    #         content=content,
-    #         metadata={"filename": md_file.name, "type": md_file.parent.name}
-    #     )
-    #     print(f"  ✓ Uploaded: {md_file.name}")
-    raise NotImplementedError("Implement upload_documents")
+    try:
+        from pageindex import PageIndex
+        
+        if not PAGEINDEX_API_KEY:
+            print("⚠ Bỏ qua upload vì chưa có PAGEINDEX_API_KEY")
+            return
+            
+        pi = PageIndex(api_key=PAGEINDEX_API_KEY)
+        
+        for md_file in STANDARDIZED_DIR.rglob("*.md"):
+            content = md_file.read_text(encoding="utf-8")
+            pi.upload(
+                content=content,
+                metadata={"filename": md_file.name, "type": md_file.parent.name}
+            )
+            print(f"  ✓ Uploaded: {md_file.name}")
+    except Exception as e:
+        print(f"⚠ Lỗi upload pageindex: {e}")
 
 
 def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
@@ -66,23 +68,27 @@ def pageindex_search(query: str, top_k: int = 5) -> list[dict]:
             'source': 'pageindex'   # Đánh dấu nguồn retrieval
         }
     """
-    # TODO: Implement PageIndex query
-    #
-    # from pageindex import PageIndex
-    #
-    # pi = PageIndex(api_key=PAGEINDEX_API_KEY)
-    # results = pi.query(query=query, top_k=top_k)
-    #
-    # return [
-    #     {
-    #         "content": r.text,
-    #         "score": r.score,
-    #         "metadata": r.metadata,
-    #         "source": "pageindex"
-    #     }
-    #     for r in results
-    # ]
-    raise NotImplementedError("Implement pageindex_search")
+    try:
+        from pageindex import PageIndex
+        
+        if not PAGEINDEX_API_KEY:
+            return []
+            
+        pi = PageIndex(api_key=PAGEINDEX_API_KEY)
+        results = pi.query(query=query, top_k=top_k)
+        
+        return [
+            {
+                "content": getattr(r, 'text', str(r)),
+                "score": getattr(r, 'score', 0.0),
+                "metadata": getattr(r, 'metadata', {}),
+                "source": "pageindex"
+            }
+            for r in results
+        ]
+    except Exception as e:
+        print(f"⚠ Lỗi truy vấn pageindex: {e}")
+        return []
 
 
 if __name__ == "__main__":

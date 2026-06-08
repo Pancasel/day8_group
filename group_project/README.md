@@ -171,34 +171,75 @@ run_dashboard()
 ## Kiến Trúc Hệ Thống
 
 ```
-[Vẽ diagram kiến trúc ở đây]
++-----------------------------------------------------------------------+
+|                       Streamlit UI Chatbot (app.py)                   |
+|  - Custom CSS Dark Mode / Outfits Typography                         |
+|  - st.session_state (Conversation History / Memory)                   |
++-----------------------------------+-----------------------------------+
+                                    | (gửi Query + Lịch sử Chat)
+                                    v
++-----------------------------------------------------------------------+
+|                    Retrieval Pipeline (Task 9 & Task 10)              |
+|  - Trích xuất 6 câu chat trước đó làm ngữ cảnh hội thoại cho LLM      |
+|  - Gọi RAG Retrieval Pipeline cho query hiện tại                      |
++-----------------------------------+-----------------------------------+
+                                    | (tìm kiếm song song)
+                   +----------------+----------------+
+                   |                                 |
+                   v                                 v
++------------------+----------------+ +--------------+------------------+
+|      Semantic Search (Task 5)     | |       Lexical Search (Task 6)    |
+|   - ChromaDB (all-MiniLM-L6-v2)   | |   - BM25Okapi local index        |
++------------------+----------------+ +--------------+------------------+
+                   |                                 |
+                   +----------------+----------------+
+                                    | (Candidates)
+                                    v
++-----------------------------------------------------------------------+
+|                         Reranker (Task 7)                             |
+|  - Reciprocal Rank Fusion (RRF) gộp điểm & xếp hạng lại candidates    |
++-----------------------------------+-----------------------------------+
+                                    | (Kiểm tra Threshold)
+                                    |
+            [Score >= 0.35] --------+-------- [Score < 0.35] (Fallback)
+                   |                                 |
+                   v                                 v
++------------------+----------------+ +--------------+------------------+
+|       Top 5 Chunks (Hybrid)       | |     PageIndex Search (Task 8)    |
+|   (Đã được RRF xếp hạng)           | |    - Vectorless search fallback |
++------------------+----------------+ +--------------+------------------+
+                   |                                 |
+                   +----------------+----------------+
+                                    | (Top K Chunks)
+                                    v
++-----------------------------------------------------------------------+
+|                    Reorder for LLM (Lost in the Middle)               |
+|  - Sắp xếp thứ tự chunks tối ưu: Chunks tốt nhất ở đầu và cuối        |
++-----------------------------------+-----------------------------------+
+                                    | (Context được định dạng)
+                                    v
++-----------------------------------------------------------------------+
+|                         LLM Generation (Task 10)                      |
+|  - GPT-4o-mini với prompt yêu cầu trích dẫn và chống ngụy tạo thông tin|
++-----------------------------------+-----------------------------------+
+                                    | (Stream text phản hồi)
+                                    v
++-----------------------------------------------------------------------+
+|                     Giao diện Chatbot hiển thị                        |
+|  - Nội dung trả lời có trích dẫn nguồn [1], [2], ...                  |
+|  - st.expander hiển thị chi tiết nội dung chunk và Metadata           |
++-----------------------------------------------------------------------+
 ```
-
----
-
-## Phân Công Công Việc
-
-| Thành viên | MSSV | Nhiệm vụ | Trạng thái |
-|-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
 
 ---
 
 ## Hướng Dẫn Chạy
 
 ```bash
-# Cài đặt dependencies
-pip install -r requirements.txt
+# 1. Cấu hình các API Keys trong file .env ở thư mục gốc
+# OPENAI_API_KEY=your_openai_key
+# PAGEINDEX_API_KEY=your_pageindex_key
 
-# Chạy app
+# 2. Chạy ứng dụng Streamlit từ thư mục gốc
 streamlit run app.py
-# hoặc
-chainlit run app.py
 ```
-
----
-
-## Lưu ý: Hãy giữ lại repo này nếu như bạn học track 3 giai đoạn 2, chúng ta sẽ phát triển tiếp dự án lên knowledge graph để khắc phục các câu hỏi hóc búa khi có các câu hỏi khó.

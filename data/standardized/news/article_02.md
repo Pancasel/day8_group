@@ -1,0 +1,12 @@
+# Ca sĩ Chi Dân, người mẫu An Tây bị đề nghị truy tố
+
+**Source:** https://vnexpress.net/ca-si-chi-dan-nguoi-mau-an-tay-bi-de-nghi-truy-to-4852936.html
+**Crawled:** 2026-06-08T15:42:20.103349
+
+---
+
+Cơ quan Cảnh sát điều tra Công an TP HCM đề nghị truy tố ca sĩ Chi Dân, người mẫu An Tây cùng 225 bị can khác trong đường dây ma túy xuyên quốc gia liên quan đến chuyên án tiếp viên hàng không.
+
+Công an TP HCM vừa hoàn tất kết luận điều tra, chuyển hồ sơ sang Viện kiểm sát nhân dân cùng cấp đề nghị truy tố Nguyễn Trung Hiếu (ca sĩ Chi Dân), Andrea Aybar Carmona (người mẫu An Tây, quốc tịch Tây Ban Nha) và Nguyễn Đỗ Trúc Phương cùng tội danh "Tổ chức sử dụng trái phép chất ma túy". Người mẫu An Tây bị đề nghị truy tố thêm tội "Tàng trữ trái phép chất ma túy".
+
+Theo kết luận điều tra, các đối tượng này đã mua ma túy từ các nhóm phân phối nhỏ lẻ thuộc đường dây vận chuyển ma túy từ Pháp về Việt Nam qua đường hàng không. Cơ quan chức năng xác định việc khởi tố và truy tố các nghệ sĩ, người nổi tiếng thể hiện sự kiên quyết của pháp luật, không có vùng cấm trong công tác phòng chống ma túy.

@@ -1,0 +1,36 @@
+# Môi trường ảo (Virtual Environments)
+.env
+venv/
+.venv/
+ENV/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# Cơ sở dữ liệu Vector & Dữ liệu cache
+chroma_db/
+.deepeval/
+
+# Thư mục Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Môi trường hệ điều hành & IDE (VSCode, PyCharm...)
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Thư mục log
+*.log
